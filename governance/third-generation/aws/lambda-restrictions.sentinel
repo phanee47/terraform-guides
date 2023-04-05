@@ -14,7 +14,7 @@ runtimes = {
     "nodejs16.x": false,
 }
 
-mandatory_tag = ["Artifactory"]
+mandatory_tags = ["Artifactory"]
 
 validate_lambda_functions = func() {
     lambdas = plan.find_resources("aws_lambda_function")
@@ -37,7 +37,7 @@ validate_lambda_functions = func() {
         lambdas_not_passing_tags = plan.filter_attribute_not_contains_list(lambdas, "tags", mandatory_tags, true)
 	  tags = updated.tags else null    
         if length(lambdas_not_passing_tags["resources"]) is not 0 {
-            print(address, " is using an unsupported tags ", tags, ". valid tags: ", mandatory_tag)
+            print(address, " is using an unsupported tags ", tags, ". valid tags: ", mandatory_tags)
             validated = false
         }
     }
