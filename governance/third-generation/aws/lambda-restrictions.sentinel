@@ -1,0 +1,53 @@
+import "tfplan-functions" as plan
+import "tfrun"
+
+workspaces_to_exclude = [""]
+workspace_name = tfrun.workspace.name
+
+runtimes = { 
+    "java11": true,
+    "python3.7": true,
+    "python3.8": true,
+    "python3.9": true,
+    "provided.al2": true,
+    "nodejs14.x": false,
+    "nodejs16.x": false,
+}
+
+mandatory_tag = ["Artifactory"]
+
+validate_lambda_functions = func() {
+    lambdas = plan.find_resources("aws_lambda_function")
+    validated = true
+    for lambdas as address, resource {
+        updated = resource.change.after
+        runtime = updated.runtime else null
+        valid_runtime = runtimes[runtime] else false
+        if valid_runtime is not true {
+            print(address, " is using an unsupported runtime ", runtime, ". valid runtimes: ", keys(runtimes))
+            validated = false
+        }
+
+        package_type = updated.package_type else null
+        if package_type is not "Zip" {
+            print("ECR images are not supported please update ", address)
+            validated = false
+        }
+
+        lambdas_not_passing_tags = plan.filter_attribute_not_contains_list(lambdas, "tags", mandatory_tags, true)
+	  tags = updated.tags else null    
+        if length(lambdas_not_passing_tags["resources"]) is not 0 {
+            print(address, " is using an unsupported tags ", tags, ". valid tags: ", mandatory_tag)
+            validated = false
+        }
+    }
+    return validated
+}
+
+evaluate = rule when workspace_name not in workspaces_to_exclude {
+    validate_lambda_functions()
+}
+
+main = rule {
+   evaluate
+}

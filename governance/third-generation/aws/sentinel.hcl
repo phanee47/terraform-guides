@@ -133,3 +133,8 @@ policy "validate-providers-from-desired-regions" {
   source = "./validate-providers-from-desired-regions.sentinel"
   enforcement_level = "advisory"
 }
+
+policy "lambda-restrictions" {
+  source = "./lambda-restrictions.sentinel"
+  enforcement_level = "advisory"
+}
