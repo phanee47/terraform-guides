@@ -139,7 +139,7 @@ policy "lambda-restrictions" {
   enforcement_level = "advisory"
 }
   
-policy "lambda-restrictions" {
+policy "lambda-publicvpc" {
   source = "./publicvpc_block.sentinel"
   enforcement_level = "advisory"
 }  
