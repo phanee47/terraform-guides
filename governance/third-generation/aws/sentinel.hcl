@@ -138,3 +138,8 @@ policy "lambda-restrictions" {
   source = "./lambda-restrictions.sentinel"
   enforcement_level = "advisory"
 }
+  
+policy "lambda-restrictions" {
+  source = "./publicvpc_block.sentinel"
+  enforcement_level = "advisory"
+}  
