@@ -11,7 +11,7 @@ validate_lambda_functions = func() {
     validated = true
     for lambdas as address, resource {
         updated = resource.change.after
-        subnets = updated.vpc_config.subnet_ids else null
+        subnets = updated.vpc_config[0].subnet_ids else null
       
         for subnets as subnet {
         if  "private" not in subnet {
