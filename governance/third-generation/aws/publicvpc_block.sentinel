@@ -7,7 +7,7 @@ workspace_name = tfrun.workspace.name
 private_subnets = "private"
 
 validate_lambda_functions = func() {
-    subnets = plan.find_resources("aws_subnet")
+    subnets = plan.find_datasources("aws_subnet")
     validated = true
     for subnets as address, resource {
         updated = resource.change.after
