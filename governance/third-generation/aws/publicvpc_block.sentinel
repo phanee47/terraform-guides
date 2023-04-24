@@ -1,34 +1,15 @@
-import "tfplan-functions" as plan
-import "tfrun"
+import "tfplan/v2" as tfplan
 
-workspaces_to_exclude = [""]
-workspace_name = tfrun.workspace.name
-
-private_subnets = "private"
-
-validate_lambda_functions = func() {
-    subnets = plan.find_datasources("aws_subnet")
-    print(subnets)
-    validated = true
-    for subnets as address, resource {
-        updated = resource.change.after
-        subnets_public = updated.map_public_ip_on_launch else null
-      
-        for subnets_public as subnet_public {
-        if  "false" not in subnet {
-            print("public vpc is not supported please update ", address)
-            validated = false
-        }
-      }
-
-    }
-    return validated
+//find subnets that have map_public_ip_on_launch is not false 
+violatingSubnets = filter tfplan.output_changes as _, rc {
+	rc.name is "subnets_public_flag"
+		(rc.change.actions contains "create" or rc.change.actions contains "update") and
+		(rc.change.after not contains "false")
 }
 
-evaluate = rule when workspace_name not in workspaces_to_exclude {
-    validate_lambda_functions()
-}
+// debug code
+ print(violatingSubnets)
 
 main = rule {
-   evaluate
+	length(violatingSubnets) == 0
 }
