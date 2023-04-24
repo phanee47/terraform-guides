@@ -2,7 +2,7 @@ import "tfplan/v2" as tfplan
 
 //find subnets that have map_public_ip_on_launch is not false 
 violatingSubnets = filter tfplan.output_changes as _, rc {
-	rc.name is "subnets_public_flag"
+	rc.name is "subnets_public_flag" and
 		(rc.change.actions contains "create" or rc.change.actions contains "update") and
 		(rc.change.after not contains "false")
 }
