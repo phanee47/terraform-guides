@@ -139,7 +139,7 @@ policy "validate-providers-from-desired-regions" {
 #  enforcement_level = "advisory"
 #}
   
-#policy "lambda-publicvpc" {
-#  source = "./publicvpc_block.sentinel"
-#  enforcement_level = "advisory"
-#}  
+policy "lambda-publicvpc" {
+  source = "./publicvpc_block.sentinel"
+  enforcement_level = "advisory"
+}  
