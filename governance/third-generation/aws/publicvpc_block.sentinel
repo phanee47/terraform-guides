@@ -8,6 +8,7 @@ private_subnets = "private"
 
 validate_lambda_functions = func() {
     subnets = plan.find_datasources("aws_subnet")
+    print(subnets)
     validated = true
     for subnets as address, resource {
         updated = resource.change.after
